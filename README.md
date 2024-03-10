@@ -1,2 +1,2 @@
-# terraform-eks-aws-codepipeline
-terraform code for creating eks cluster - aws-codepipeline
+# EKS-ALB
+This is a repository contains terraform code for eks deployment and had alb ingress controller.
