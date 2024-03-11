@@ -23,11 +23,11 @@ phases:
 
   build:
     commands:
-      - terraform plan -out=tfplan
+      - terraform plan
 
   post_build:
     commands:
-      - terraform apply -auto-approve tfplan
+      - terraform apply --auto-approve
 
 artifacts:
   files:
