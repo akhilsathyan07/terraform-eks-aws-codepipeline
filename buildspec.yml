@@ -10,17 +10,21 @@ phases:
       - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
       - sudo yum -y install terraform
       - terraform --version
-      # Set AWS Credentials and Region as environment variables
-
+      
   pre_build:
     commands:
       - git clone https://github.com/akhilsathyan07/terraform-eks-aws-codepipeline.git
       - cd terraform-eks-aws-codepipeline
       - terraform init
-
+      - export AWS_SECRET=$(aws secretsmanager get-secret-value --secret-id awssecret --query SecretString --output text)
+      - export AWS_ACCESS_KEY_ID=$(echo $AWS_SECRET | jq -r .AWS_ACCESS_KEY_ID)
+      - export AWS_SECRET_ACCESS_KEY=$(echo $AWS_SECRET | jq -r .AWS_SECRET_ACCESS_KEY)
+      - export AWS_DEFAULT_REGION=us-west-2
   build:
     commands:
-      - terraform plan
+  build:
+    commands:
+      - terraform plan 
 
   post_build:
     commands:
