@@ -17,8 +17,6 @@ phases:
       - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
       - aws configure set default.region us-west-2
       - aws configure set default.output json
-      - git clone https://github.com/akhilsathyan07/terraform-eks-aws-codepipeline.git
-      - cd terraform-eks-aws-codepipeline
       - terraform init
       
   build:
