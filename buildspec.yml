@@ -17,7 +17,6 @@ phases:
       - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
       - aws configure set default.region us-west-2
       - aws configure set default.output json
-      - aws s3 ls
       - aws sts get-caller-identity
       - terraform init
       
