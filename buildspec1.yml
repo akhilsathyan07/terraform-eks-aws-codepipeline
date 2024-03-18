@@ -42,5 +42,10 @@ phases:
       - kubectl get nodes
       - kubectl apply -f jobbench.yml
       - kubectl get pods
-      
 
+  post_build:
+    commands:
+      - POD_NAME=$(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep '^kube-bench' | head -n 1)
+      - echo "Found pod: $POD_NAME"
+      - kubectl logs $POD_NAME > kube-bench-log.txt
+      # Add any additional commands to handle the log file, such as storing it as an artifact
