@@ -10,14 +10,18 @@ phases:
       - aws --version
       # kubectl installation
       - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - echo "$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256  kubectl" | sha256sum --check
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
       - sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-      # Note: No need to chmod +x after installation to /usr/local/bin and moving to ~/.local/bin is unnecessary when installed globally
+      - chmod +x kubectl
+      - mkdir -p ~/.local/bin
+      - mv ./kubectl ~/.local/bin/kubectl
       # Additional tools
       - sudo yum install wget -y
       - sudo yum update -y
-      - sudo yum install -y python3 python3-pip
-      # Note: Combined Python3 and pip installation line, ensurepip is included in python3 installation
+      - sudo yum install -y python3
+      - sudo yum install python-pip -y
+      - python3 -m ensurepip
 
   pre_build:
     commands:
@@ -26,22 +30,15 @@ phases:
       - tar -xvf kube-bench_0.3.0_linux_amd64.tar.gz
       # Setup kube-hunter
       - pip3 install --user kube-hunter
-      # Note: Updated PATH manipulation, combined for simplicity
-      - echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.bash_profile && source ~/.bash_profile
+      - echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.bash_profile
+      - echo 'export PATH' >> ~/.bash_profile
+      - source ~/.bash_profile
 
   build:
     commands:
       - kubectl version --client
-      - aws eks describe-cluster --region us-west-2 --name eks-cluster-07 --query "cluster.status"
+      - aws eks describe-cluster --region us-west-2 --name eks-cluster-07 --query cluster.status
       - aws eks update-kubeconfig --region us-west-2 --name eks-cluster-07
       - kubectl get nodes
       - kubectl apply -f jobbench.yml
       - kubectl get pods
-
-  post_build:
-    commands:
-      # Note: Simplified command to get the kube-bench pod name
-      - POD_NAME=$(kubectl get pods --selector=job-name=kube-bench -o jsonpath='{.items[0].metadata.name}')
-      - echo "Found pod: $POD_NAME"
-      - kubectl logs $POD_NAME > kube-bench-log.txt
-      # Add any additional commands to handle the log file, such as storing it as an artifact
