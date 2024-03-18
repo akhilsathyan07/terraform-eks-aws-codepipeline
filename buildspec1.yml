@@ -39,7 +39,8 @@ phases:
       - kubectl version --client
       - aws eks describe-cluster --region us-west-2 --name eks-cluster-07 --query cluster.status
       - aws eks update-kubeconfig --region us-west-2 --name eks-cluster-07
-      - kubectl create -f https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/job.yaml
+      - kubectl apply -f jobbench.yml
+      - kubectl apply -f jobhunter.yml
       - watch -n 1 kubectl get all
       - kubectl get pods
 
