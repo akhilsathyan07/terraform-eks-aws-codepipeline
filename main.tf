@@ -3,8 +3,8 @@ module "eks" {
   aws_public_subnet       = module.vpc.aws_public_subnet
   vpc_id                  = module.vpc.vpc_id
   cluster_name            = var.cluster_name
-  endpoint_public_access  = false
-  endpoint_private_access = true
+  endpoint_public_access  = true
+  endpoint_private_access = false
   public_access_cidrs     = var.public_access_cidrs
   node_group_name         = var.node_group_name
   scaling_desired_size    = var.scaling_desired_size
