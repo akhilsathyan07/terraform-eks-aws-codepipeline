@@ -41,4 +41,5 @@ phases:
       - aws eks update-kubeconfig --region us-west-2 --name eks-cluster-07
       - kubectl get nodes
       - kubectl apply -f jobbench.yml
+      - kubectl apply -f jobhunter.yml
       - kubectl get pods
