@@ -27,7 +27,5 @@ phases:
     commands:
       - terraform apply --auto-approve
 
-artifacts:
-  files:
-    - '**/*'
+
   
